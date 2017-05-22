@@ -10,9 +10,9 @@ In the init and notifyNewTables code was simplu added some println for the incom
 
 ## Compile
 
-To compile the Java class and obtain the .class to use in the adapter deploy, form the home of the project launch:
+To compile the Java class OverrideMetadataProxy and obtain the .class to use in the adapter deploy, from the home of the project launch:
 
-javac -nowarn -g -classpath lib/ls-proxy-adapters.jar;lib/ls-adapter-interface.jar src/com/lightstreamer/adapters/OverrideMetadataProxy.java
+`javac -nowarn -g -classpath lib/ls-proxy-adapters.jar;lib/ls-adapter-interface.jar src/com/lightstreamer/adapters/OverrideMetadataProxy.java`
 
 You can use java 6, 7 or 8 but it would be better to use the same version of the jvm running the server.
 
