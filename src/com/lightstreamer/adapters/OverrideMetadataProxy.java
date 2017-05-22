@@ -22,6 +22,7 @@ public class OverrideMetadataProxy extends RobustNetworkedMetadataProvider {
         
         System.out.println("Start OverrideMetadata Adapter.");
 
+        @SuppressWarnings("unchecked")
         Set<String> list_k = params.keySet();
         Iterator<String> iterator = list_k.iterator();
         String k = "";
@@ -51,6 +52,5 @@ public class OverrideMetadataProxy extends RobustNetworkedMetadataProvider {
         
         super.notifyNewTables(user, session, tables);
     }
-    
     
 }
