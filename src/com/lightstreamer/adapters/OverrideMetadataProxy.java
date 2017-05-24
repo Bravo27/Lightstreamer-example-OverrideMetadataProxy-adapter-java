@@ -6,12 +6,18 @@ import com.lightstreamer.interfaces.metadata.MetadataProviderException;
 import com.lightstreamer.interfaces.metadata.NotificationException;
 import com.lightstreamer.interfaces.metadata.TableInfo;
 
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 public class OverrideMetadataProxy extends RobustNetworkedMetadataProvider {
+    
+    private Logger logger = null;
     
     public OverrideMetadataProxy() {
         super();
@@ -21,14 +27,26 @@ public class OverrideMetadataProxy extends RobustNetworkedMetadataProvider {
     public void init(Map params, File configDir) throws MetadataProviderException {
         
         System.out.println("Start OverrideMetadata Adapter.");
-
+        
+        ILoggerFactory factory = LoggerFactory.getILoggerFactory();
+        if (factory instanceof ch.qos.logback.classic.LoggerContext) {
+            ch.qos.logback.classic.LoggerContext logbackContext = (ch.qos.logback.classic.LoggerContext) factory;
+            Logger found = logbackContext.exists("LightstreamerProxyAdapters");
+            System.out.println(">>>>>>>>>>>>>>>>> " + found);
+        } else {
+            // 
+        }
+        
+        logger = LoggerFactory.getLogger("LightstreamerProxyAdapters");
+        logger.info("Start OverrideMetadata Adapter.");
+        
         @SuppressWarnings("unchecked")
         Set<String> list_k = params.keySet();
         Iterator<String> iterator = list_k.iterator();
         String k = "";
         while(iterator.hasNext()) {
             k = iterator.next();
-            System.out.println(k + " : " + params.get(k));
+            logger.info(k + " : " + params.get(k));
         }
                 
         super.init(params, configDir);
@@ -42,15 +60,29 @@ public class OverrideMetadataProxy extends RobustNetworkedMetadataProvider {
     @Override
     public void notifyNewTables(String user, String session, TableInfo [] tables) throws CreditsException, NotificationException {
         
-        System.out.println("Call received for notifyNewTables, user: " + user + ", session: " + session);
+        logger.info("Call received for notifyNewTables, user: " + user + ", session: " + session);
         int len = tables.length;
         for (int ik = 0; ik < len; ik++) {
-            System.out.println("Items list: " + tables[ik].getId());
-            System.out.println("Field list: " + tables[ik].getSchema());
-            System.out.println("Sub mode: " + tables[ik].getMode());
+            logger.info("\tItems list: " + tables[ik].getId());
+            logger.info("\tField list: " + tables[ik].getSchema());
+            logger.info("\tSub mode: " + tables[ik].getMode());
         }
         
         super.notifyNewTables(user, session, tables);
+    }
+    
+    @Override
+    public void notifyTablesClose(String session, TableInfo[] tables) throws NotificationException {
+        
+        logger.info("Call received for notifyTablesClose, session: " + session);
+        int len = tables.length;
+        for (int ik = 0; ik < len; ik++) {
+            logger.info("\tItems list: " + tables[ik].getId());
+            logger.info("\tField list: " + tables[ik].getSchema());
+            logger.info("\tSub mode: " + tables[ik].getMode());
+        }
+        
+        super.notifyTablesClose(session, tables);
     }
     
 }
